@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>8-Letter Wordle</title>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f0f0f0; }
+    .grid { display: grid; grid-template-columns: repeat(8, 50px); gap: 5px; margin: 20px auto; width: max-content; }
+    .cell { width: 50px; height: 50px; border: 2px solid #999; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; background: white; }
+    .green { background: #6aaa64; color: white; }
+    .yellow { background: #c9b458; color: white; }
+    .gray { background: #787c7e; color: white; }
+    input { padding: 10px; font-size: 20px; width: 200px; }
+  </style>
+</head>
+<body>
+
+<h1>8-Letter Wordle</h1>
+<div id="board"></div>
+<input type="text" id="guessInput" maxlength="8" placeholder="Enter word" />
+<button onclick="makeGuess()">Guess</button>
+<p id="message"></p>
+
+<script>
+const words = ["ELEPHANT", "BASEBALL", "NOTEBOOK", "SOFTWARE", "TREASURE", "HOSPITAL"]; // sample list
+const target = words[Math.floor(Math.random() * words.length)];
+let guesses = [];
+const maxGuesses = 6;
+
+function renderBoard() {
+  let html = "";
+  for (let i = 0; i < maxGuesses; i++) {
+    html += `<div class="grid">`;
+    const word = guesses[i] || "";
+    for (let j = 0; j < 8; j++) {
+      const letter = word[j] || "";
+      let cls = "cell";
+      if (word) {
+        if (letter === target[j]) cls += " green";
+        else if (target.includes(letter)) cls += " yellow";
+        else cls += " gray";
+      }
+      html += `<div class="${cls}">${letter}</div>`;
+    }
+    html += `</div>`;
+  }
+  document.getElementById("board").innerHTML = html;
+}
+
+function makeGuess() {
+  const guess = document.getElementById("guessInput").value.toUpperCase();
+  if (guess.length !== 8) {
+    alert("Must be 8 letters");
+    return;
+  }
+  if (!words.includes(guess)) {
+    alert("Not in word list");
+    return;
+  }
+  guesses.push(guess);
+  document.getElementById("guessInput").value = "";
+  renderBoard();
+  if (guess === target) {
+    document.getElementById("message").innerText = "You win!";
+  } else if (guesses.length >= maxGuesses) {
+    document.getElementById("message").innerText = `Game Over! Word was ${target}`;
+  }
+}
+
+renderBoard();
+</script>
+
+</body>
+</html>
